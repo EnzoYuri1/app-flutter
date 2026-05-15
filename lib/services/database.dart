@@ -2,32 +2,27 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseService {
-
-  //garante que exista apenas 1 instância do banco no no app.
+  // Garante que exista apenas 1 instância do banco no app.
   static final DatabaseService instance = DatabaseService._init();
- 
-  //instância privada do banco.
+
+  // Instância privada do banco.
   static Database? _database;
-  
-  //construtor.
+
+  // Construtor privado.
   DatabaseService._init();
 
-  //faz o retorno do banco já aberto ou inicializa caso não exista.
+  // Retorna o banco aberto ou inicializa caso não exista.
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDB('banco_digital.db');
     return _database!;
   }
 
-  //cria ou abre o caminho do arquivo do banco.
+  // Cria ou abre o caminho do arquivo do banco.
   Future<Database> _initDB(String filePath) async {
-    //caminho padrão onde o banco fica salvo no dispositivo.
     final dbPath = await getDatabasesPath();
-    //faz a junção do caminho com o nome do aquivo do banco(caminho+nome).
     final path = join(dbPath, filePath);
 
-
-    //abre o banco ou cria caso não exista.
     return await openDatabase(
       path,
       version: 1,
@@ -35,10 +30,9 @@ class DatabaseService {
     );
   }
 
-  
-
+  // Criação das tabelas (Pessoa 1 e Pessoa 4)
   Future _createDB(Database db, int version) async {
-    //cria a tabela de usuários.
+    // Tabela de usuários (Pessoa 1)
     await db.execute('''
       CREATE TABLE usuarios(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,12 +41,22 @@ class DatabaseService {
         senha TEXT NOT NULL
       )
     ''');
+
+    // Tabela de transferências (Pessoa 4)
+    await db.execute('''
+      CREATE TABLE transferencias (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        valor REAL NOT NULL,
+        destinatario TEXT NOT NULL,
+        data TEXT NOT NULL
+      )
+    ''');
   }
 
-  //insere um novo usuário no banco.
+  // --- FUNÇÕES DA PESSOA 1 (Autenticação) ---
+
   Future<void> salvarUsuario(String nome, String email, String senha) async {
     final db = await instance.database;
-
     await db.insert(
       'usuarios',
       {
@@ -63,18 +67,32 @@ class DatabaseService {
     );
   }
 
-  
-  //verifica há um usuário com o email e senha que foram fornecidos.
   Future<bool> verificarUsuario(String email, String senha) async {
     final db = await instance.database;
-
     final result = await db.query(
       'usuarios',
       where: 'email = ? AND senha = ?',
       whereArgs: [email, senha],
     );
-
-    //caso tenha encontrado alguma registro, o login é válido.
     return result.isNotEmpty;
+  }
+
+  // --- FUNÇÕES DA PESSOA 4 (Transferências & Histórico) ---
+
+  // Salva uma nova transferência no banco
+  Future<int> registrarTransferencia(double valor, String destino) async {
+    final db = await instance.database;
+    return await db.insert('transferencias', {
+      'valor': valor,
+      'destinatario': destino,
+      'data': DateTime.now().toString().substring(0, 16), // Salva "AAAA-MM-DD HH:MM"
+    });
+  }
+
+  // Busca todas as transferências para exibir no histórico
+  Future<List<Map<String, dynamic>>> buscarHistorico() async {
+    final db = await instance.database;
+    // Retorna as transações da mais recente para a mais antiga
+    return await db.query('transferencias', orderBy: 'id DESC');
   }
 }
