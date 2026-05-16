@@ -31,6 +31,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  sqflite: ^2.4.2
+  path: ^1.9.1
+
+  
 
   # Imagens e câmera
   image_picker: ^1.0.7
@@ -38,10 +42,7 @@ dependencies:
   # Autenticação por digital
   local_auth: ^2.1.8
 
-  # Banco de dados
-  firebase_core: ^2.27.0
-  firebase_auth: ^4.17.0
-  cloud_firestore: ^4.15.0
+
 
 dev_dependencies:
   flutter_test:
