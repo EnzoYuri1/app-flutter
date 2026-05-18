@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../services/database_service.dart';
-
+import 'package:gasapp/services/database.dart';
 class TransferenciaScreen extends StatefulWidget {
   @override
   _TransferenciaScreenState createState() => _TransferenciaScreenState();
@@ -15,7 +14,7 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
     final double? valor = double.tryParse(_valorController.text);
     final String destino = _destinoController.text;
 
-    // --- VALIDAÇÕES (Requisito da Pessoa 4) ---
+    
     if (valor == null || valor <= 0) {
       _mensagem("Digite um valor válido");
       return;
@@ -29,14 +28,13 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
       return;
     }
 
-    // --- SALVAR NO BANCO (Requisito da Pessoa 4) ---
     await DatabaseService.instance.registrarTransferencia(valor, destino);
     
     _mensagem("Transferência enviada!", cor: Colors.green);
     _valorController.clear();
     _destinoController.clear();
     
-    setState(() {}); // Atualiza a lista de histórico automaticamente
+    setState(() {}); 
   }
 
   void _mensagem(String texto, {Color cor = Colors.red}) {
@@ -53,7 +51,7 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // PARTE 1: Formulário de Envio
+           
             Card(
               child: Padding(
                 padding: EdgeInsets.all(16.0),
@@ -83,7 +81,7 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
             Text("Histórico de Transações", 
                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             
-            // PARTE 2: Histórico (Requisito da Pessoa 4)
+            
             Expanded(
               child: FutureBuilder<List<Map<String, dynamic>>>(
                 future: DatabaseService.instance.buscarHistorico(),
