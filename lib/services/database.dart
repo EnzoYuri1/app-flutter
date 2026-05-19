@@ -42,7 +42,6 @@ class DatabaseService {
       )
     ''');
 
-    // Tabela de transferências (Pessoa 4)
     await db.execute('''
       CREATE TABLE transferencias (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +52,6 @@ class DatabaseService {
     ''');
   }
 
-  // --- FUNÇÕES DA PESSOA 1 (Autenticação) ---
 
   Future<void> salvarUsuario(String nome, String email, String senha) async {
     final db = await instance.database;
@@ -77,7 +75,6 @@ class DatabaseService {
     return result.isNotEmpty;
   }
 
-  // --- FUNÇÕES DA PESSOA 4 (Transferências & Histórico) ---
 
   // Salva uma nova transferência no banco
   Future<int> registrarTransferencia(double valor, String destino) async {
