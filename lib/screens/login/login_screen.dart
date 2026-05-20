@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../services/autenticacao.dart';
+import '../../../routes/app_routes.dart';
 import 'register_screen.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,11 +25,7 @@ class _LoginPageState extends State<LoginPage> {
     bool loginValido = await authService.login(email, senha);
 
     if (loginValido) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login realizado com sucesso!'),
-        ),
-      );
+      Navigator.pushReplacementNamed(context, AppRoutes.principal);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

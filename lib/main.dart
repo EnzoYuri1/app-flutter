@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'routes/app_routes.dart';
-import 'screens/transferencia/transferencia_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,10 +19,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
 
-      routes: {
-        ...AppRoutes.routes,
-        '/transferencia': (context) => TransferenciaScreen(),
-      },
+      routes: AppRoutes.routes,
 
       initialRoute: AppRoutes.login,
     );
