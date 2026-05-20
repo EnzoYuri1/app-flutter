@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
 import '../screens/login/login_screen.dart';
 import '../screens/login/register_screen.dart';
 import '../screens/principal/principal_screen.dart';
 import '../screens/transferencia/transferencia_screen.dart';
+import '../screens/cotacao/cotacao_screen.dart';
 
 class AppRoutes {
 
@@ -11,6 +11,7 @@ class AppRoutes {
   static const String register = '/register';
   static const String principal = '/principal';
   static const String transferencia = '/transferencia';
+  static const String cotacao = '/cotacao';
 
   //mapa de rotas do app.
   static Map<String, WidgetBuilder> routes = {
@@ -18,5 +19,6 @@ class AppRoutes {
     register: (context) => const RegisterPage(),
     principal: (context) => const PrincipalScreen(),
     transferencia: (context) => TransferenciaScreen(),
+    cotacao: (context) => const CotacaoScreen(),
   };
 }

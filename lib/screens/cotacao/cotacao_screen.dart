@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: HomePage(),
-  ));
-}
+class CotacaoScreen extends StatefulWidget {
+  const CotacaoScreen({super.key});
 
-class HomePage extends StatefulWidget {
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<CotacaoScreen> createState() => _CotacaoScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _CotacaoScreenState extends State<CotacaoScreen> {
 
   String dolar = "";
   String euro = "";

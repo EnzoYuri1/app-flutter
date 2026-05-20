@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gasapp/services/database.dart';
 
 class TransferenciaScreen extends StatefulWidget {
+  const TransferenciaScreen({super.key});
+
   @override
   _TransferenciaScreenState createState() => _TransferenciaScreenState();
 }
