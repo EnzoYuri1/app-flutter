@@ -1,85 +1,110 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
-class CotacaoScreen extends StatefulWidget {
-  const CotacaoScreen({super.key});
-
-  @override
-  State<CotacaoScreen> createState() => _CotacaoScreenState();
+void main() {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: HomePage(),
+  ));
 }
 
-class _CotacaoScreenState extends State<CotacaoScreen> {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
 
   String dolar = "";
   String euro = "";
   String real = "1.00";
-  bool loading = false;
-  
-  pegar() async {
-    loading = true;
-    setState(() {});
+
+  bool carregando = false;
+
+  Future pegarCotacao() async {
+
+    setState(() {
+      carregando = true;
+    });
 
     try {
-      var resposta = await Dio().get(
-        "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL"
+
+      final response = await Dio().get(
+        'https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL',
       );
 
-      dolar = resposta.data["USDBRL"]["bid"];
-      euro = resposta.data["EURBRL"]["bid"];
+      setState(() {
+
+        dolar = response.data['USDBRL']['bid'];
+        euro = response.data['EURBRL']['bid'];
+
+      });
 
     } catch (e) {
-      print(e);
+
+      print("Erro: $e");
+
     }
 
-    loading = false;
-    setState(() {});
+    setState(() {
+      carregando = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
 
       appBar: AppBar(
-        title: Text("Cotação"),
+        title: Text("Cotação de Moedas"),
+        backgroundColor: Colors.orange,
       ),
 
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              pegar();
-            },
-            child: Text("Buscar"),
-          ),
+      body: Padding(
+        padding: EdgeInsets.all(20),
 
-          SizedBox(height: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
 
-          loading
-              ? CircularProgressIndicator()
-              : Column(
-                  children: [
-                    Text(
-                      "Real: $real",
-                      style: TextStyle(fontSize: 20),
-                    ),
+            ElevatedButton(
+              onPressed: pegarCotacao,
+              child: Text("Buscar Cotação"),
+            ),
 
-                    SizedBox(height: 10),
-                    Text(
-                      "Dólar: $dolar",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    
-                    SizedBox(height: 10),
-                    Text(
-                      "Euro: $euro",
-                      style: TextStyle(fontSize: 20),
-                    ),
+            SizedBox(height: 30),
 
-                  ],
-                )
+            carregando
+                ? Center(child: CircularProgressIndicator())
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
 
-        ],
+                      Text(
+                        "Real (BRL): R\$ $real",
+                        style: TextStyle(fontSize: 22),
+                      ),
+
+                      SizedBox(height: 15),
+
+                      Text(
+                        "Dólar (USD): R\$ $dolar",
+                        style: TextStyle(fontSize: 22),
+                      ),
+
+                      SizedBox(height: 15),
+
+                      Text(
+                        "Euro (EUR): R\$ $euro",
+                        style: TextStyle(fontSize: 22),
+                      ),
+
+                    ],
+                  ),
+
+          ],
+        ),
       ),
     );
   }
