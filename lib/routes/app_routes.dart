@@ -19,6 +19,6 @@ class AppRoutes {
     register: (context) => const RegisterPage(),
     principal: (context) => const PrincipalScreen(),
     transferencia: (context) => TransferenciaScreen(),
-    cotacao: (context) => const CotacaoScreen(),
+    cotacao: (context) => HomePage(),
   };
 }
