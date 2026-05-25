@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gasapp/services/autenticacao.dart';
+import 'package:NexBank/services/autenticacao.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

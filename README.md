@@ -1,17 +1,99 @@
-# gasapp
+# NexBank
 
-A new Flutter project.
+O **NexBank** é um aplicativo mobile desenvolvido em Flutter que simula funcionalidades básicas de um banco digital moderno. O projeto foi criado com foco em aprendizado de desenvolvimento mobile, experiência do usuário (UX) e persistência de dados locais.
 
-## Getting Started
+O aplicativo permite que usuários realizem cadastro, login e gerenciamento básico de saldo de forma simples e intuitiva, utilizando banco de dados local com SQLite.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+# Funcionalidades
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+* Cadastro de usuários
+* Login com autenticação
+* Persistência de sessão (login automático)
+* Saldo dinâmico
+* Transferências entre contas
+* Histórico de transferências
+* Tela de extrato
+* Atualização automática do saldo
+* Tema claro e escuro
+* Alternância de tema em tempo real
+* Ocultar/mostrar saldo
+* Interface moderna e responsiva
+* Ícone personalizado do aplicativo
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+# Tecnologias Utilizadas
+
+* Flutter
+* Dart
+* SQLite (`sqflite`)
+* Shared Preferences
+* Material Design 3
+
+---
+
+# Estrutura do Projeto
+
+```txt
+lib/
+├── models/
+├── routes/
+├── screens/
+├── services/
+└── widgets/
+```
+
+---
+
+# Objetivo do Projeto
+
+O objetivo do NexBank é demonstrar a construção de um aplicativo bancário moderno utilizando Flutter, aplicando conceitos de:
+
+* navegação entre telas;
+* gerenciamento de estado;
+* persistência local de dados;
+* experiência do usuário;
+* autenticação;
+* organização de projeto;
+* design mobile moderno.
+
+---
+
+# Público-Alvo
+
+Projeto desenvolvido para fins acadêmicos e educacionais, servindo como prática de desenvolvimento mobile e arquitetura de aplicações Flutter.
+
+---
+
+# Como Executar
+
+## 1. Instalar dependências
+
+```bash
+flutter pub get
+```
+
+## 2. Executar o projeto
+
+```bash
+flutter run
+```
+
+---
+
+# Dependências Principais
+
+```yaml
+sqflite
+shared_preferences
+flutter_launcher_icons
+intl
+```
+
+---
+
+# Desenvolvido com Flutter
+
+Projeto desenvolvido utilizando Flutter e Dart para fins de estudo e aprendizado em desenvolvimento mobile.
