@@ -1,13 +1,14 @@
 class TransferenciaModel {
-
   final int usuarioId;
   final String destinatario;
+  final String? nomeDestinatario;
   final double valor;
   final DateTime data;
 
   TransferenciaModel({
     required this.usuarioId,
     required this.destinatario,
+    this.nomeDestinatario,
     required this.valor,
     required this.data,
   });
@@ -16,6 +17,7 @@ class TransferenciaModel {
     return {
       'usuarioId': usuarioId,
       'destinatario': destinatario,
+      'nomeDestinatario': nomeDestinatario,
       'valor': valor,
       'data': data.toIso8601String(),
     };
@@ -25,7 +27,8 @@ class TransferenciaModel {
     return TransferenciaModel(
       usuarioId: map['usuarioId'],
       destinatario: map['destinatario'],
-      valor: map['valor'],
+      nomeDestinatario: map['nomeDestinatario'],
+      valor: (map['valor'] as num).toDouble(),
       data: DateTime.parse(map['data']),
     );
   }

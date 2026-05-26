@@ -339,10 +339,10 @@ class _PrincipalScreenState extends State<PrincipalScreen> {
                     icon: Icons.person,
                     label: 'Perfil',
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Em desenvolvimento...'),
-                        ),
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.perfil,
+                        arguments: usuario,
                       );
                     },
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../models/cotacao_model.dart';
 import '../../services/cotacao_service.dart';
 
@@ -17,7 +18,6 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = false;
   String? _erro;
 
-  // Resultado da conversão
   double? _resultadoDolar;
   double? _resultadoEuro;
 
@@ -79,12 +79,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final secondaryText = Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.70);
+
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Cotação de Moedas'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -98,13 +100,16 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: _isLoading
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(color: Colors.blue),
-                  SizedBox(height: 16),
-                  Text('Buscando cotações...'),
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Buscando cotações...',
+                    style: TextStyle(color: secondaryText),
+                  ),
                 ],
               ),
             )
@@ -115,14 +120,18 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.wifi_off, size: 64, color: Colors.grey),
+                        Icon(
+                          Icons.wifi_off,
+                          size: 64,
+                          color: isDark ? Colors.white54 : Colors.grey,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           _erro!,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey,
+                            color: secondaryText,
                           ),
                         ),
                         const SizedBox(height: 24),
@@ -130,10 +139,6 @@ class _HomePageState extends State<HomePage> {
                           onPressed: _buscarCotacao,
                           icon: const Icon(Icons.refresh),
                           label: const Text('Tentar novamente'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                          ),
                         ),
                       ],
                     ),
@@ -144,7 +149,6 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Cards de cotação
                       const Text(
                         'Câmbio Atual',
                         style: TextStyle(
@@ -177,19 +181,19 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       const SizedBox(height: 24),
-
-                      // Conversor
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.15),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
+                              color: isDark
+                                  ? Colors.black.withOpacity(0.20)
+                                  : Colors.black.withOpacity(0.05),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
@@ -204,11 +208,11 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
+                            Text(
                               'Digite um valor em reais para converter',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Colors.grey,
+                                color: secondaryText,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -218,19 +222,10 @@ class _HomePageState extends State<HomePage> {
                                 decimal: true,
                               ),
                               onChanged: (_) => _calcularConversao(),
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 labelText: 'Valor em BRL',
                                 prefixText: 'R\$ ',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: const BorderSide(
-                                    color: Colors.blue,
-                                    width: 2,
-                                  ),
-                                ),
+                                border: OutlineInputBorder(),
                               ),
                             ),
                             if (_resultadoDolar != null && _resultadoEuro != null) ...[
@@ -254,16 +249,13 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 16),
-
-                      // Nota de atualização
                       Center(
                         child: Text(
                           'Cotações fornecidas por AwesomeAPI',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey[500],
+                            color: secondaryText,
                           ),
                         ),
                       ),
@@ -292,16 +284,21 @@ class _CotacaoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final secondaryText = Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.70);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.15),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: isDark
+                ? Colors.black.withOpacity(0.20)
+                : Colors.black.withOpacity(0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -313,7 +310,7 @@ class _CotacaoCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: cor.withOpacity(0.1),
+                  color: cor.withOpacity(isDark ? 0.18 : 0.10),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(icone, color: cor, size: 20),
@@ -324,7 +321,7 @@ class _CotacaoCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey[600],
+                  color: secondaryText,
                 ),
               ),
             ],
@@ -332,7 +329,7 @@ class _CotacaoCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             titulo,
-            style: const TextStyle(fontSize: 13, color: Colors.grey),
+            style: TextStyle(fontSize: 13, color: secondaryText),
           ),
           const SizedBox(height: 4),
           Text(
@@ -365,12 +362,14 @@ class _ResultadoConversao extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: cor.withOpacity(0.05),
+        color: cor.withOpacity(isDark ? 0.14 : 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: cor.withOpacity(0.2)),
+        border: Border.all(color: cor.withOpacity(isDark ? 0.35 : 0.20)),
       ),
       child: Row(
         children: [
@@ -379,7 +378,10 @@ class _ResultadoConversao extends StatelessWidget {
           Expanded(
             child: Text(
               moeda,
-              style: const TextStyle(fontSize: 14, color: Colors.black87),
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           Text(

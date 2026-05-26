@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:NexBank/services/database.dart';
+
+import '../../services/database.dart';
 
 class ExtratoScreen extends StatefulWidget {
   const ExtratoScreen({super.key});
@@ -34,9 +35,14 @@ class _ExtratoScreenState extends State<ExtratoScreen> {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     final usuarioId = usuario?['id'] as int?;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Extrato'), centerTitle: true),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: const Text('Extrato'),
+        centerTitle: true,
+      ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: DatabaseService.instance.buscarHistorico(usuarioId: usuarioId),
         builder: (context, snapshot) {
@@ -58,19 +64,28 @@ class _ExtratoScreenState extends State<ExtratoScreen> {
             itemBuilder: (context, index) {
               final item = historico[index];
               final valor = (item['valor'] as num).toDouble();
+              final conta = item['destinatario']?.toString() ?? '';
+              final nome = item['nomeDestinatario']?.toString();
 
               return Card(
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 margin: const EdgeInsets.only(bottom: 12),
                 child: ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: Color(0xFFE3F2FD),
-                    child: Icon(Icons.arrow_upward, color: Colors.blue),
+                  leading: CircleAvatar(
+                    backgroundColor:
+                        isDark ? const Color(0xFF263238) : const Color(0xFFE3F2FD),
+                    child: const Icon(
+                      Icons.arrow_upward,
+                      color: Colors.blue,
+                    ),
                   ),
                   title: Text(
-                    'Transferência para ${item['destinatario']}',
+                    nome == null || nome.isEmpty
+                        ? 'Transferência para conta $conta'
+                        : 'Transferência para $nome',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text(formatarData(item['data'])),
+                  subtitle: Text('Conta $conta • ${formatarData(item['data'])}'),
                   trailing: Text(
                     '- ${formatarMoeda(valor)}',
                     style: const TextStyle(

@@ -9,10 +9,12 @@ class TransferenciaScreen extends StatefulWidget {
 }
 
 class _TransferenciaScreenState extends State<TransferenciaScreen> {
+  final _contaController = TextEditingController();
+  final _nomeController = TextEditingController();
   final _valorController = TextEditingController();
-  final _destinoController = TextEditingController();
 
   Map<String, dynamic>? usuario;
+
   bool transferiu = false;
   bool carregando = false;
 
@@ -22,6 +24,7 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
 
   String formatarData(String data) {
     final dateTime = DateTime.tryParse(data);
+
     if (dateTime == null) return data;
 
     final dia = dateTime.day.toString().padLeft(2, '0');
@@ -73,27 +76,23 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
     final usuarioAtual = usuario;
 
     if (usuarioAtual == null || usuarioAtual['id'] == null) {
-      _mensagem('Não foi possível identificar o usuário logado.');
+      _mensagem('Não foi possível identificar o usuário.');
       return;
     }
 
-    final String destino = _destinoController.text.trim();
+    final conta = _contaController.text.trim();
+    final nome = _nomeController.text.trim();
     final valorTexto = _valorController.text.replaceAll(',', '.').trim();
     final double? valor = double.tryParse(valorTexto);
-    final double saldoAtual = (usuarioAtual['saldo'] as num).toDouble();
+    final saldoAtual = (usuarioAtual['saldo'] as num).toDouble();
 
-    if (destino.isEmpty && (valorTexto.isEmpty || valor == null)) {
-      _mensagem('Preencha o destinatário e o valor.');
+    if (conta.isEmpty || nome.isEmpty || valorTexto.isEmpty) {
+      _mensagem('Preencha conta, nome e valor.');
       return;
     }
 
-    if (destino.isEmpty) {
-      _mensagem('Informe o destinatário.');
-      return;
-    }
-
-    if (valorTexto.isEmpty) {
-      _mensagem('Informe o valor da transferência.');
+    if (conta.length != 5) {
+      _mensagem('A conta deve ter 5 dígitos.');
       return;
     }
 
@@ -107,7 +106,8 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
       return;
     }
 
-    final confirmar = await _confirmarAntesDeTransferir(valor, destino);
+    final confirmar = await _confirmarAntesDeTransferir(valor, nome);
+
     if (!confirmar) return;
 
     setState(() {
@@ -119,7 +119,8 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
           .registrarTransferencia(
             usuarioId: usuarioAtual['id'] as int,
             valor: valor,
-            destinatario: destino,
+            destinatario: nome,
+            contaDestinatario: conta,
           );
 
       if (!mounted) return;
@@ -130,13 +131,11 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
         carregando = false;
       });
 
+      _contaController.clear();
+      _nomeController.clear();
       _valorController.clear();
-      _destinoController.clear();
 
-      _mensagem(
-        'Transferência de ${formatarMoeda(valor)} enviada com sucesso!',
-        cor: Colors.green,
-      );
+      _mensagem('Transferência enviada com sucesso!', cor: Colors.green);
     } catch (e) {
       if (!mounted) return;
 
@@ -155,6 +154,7 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
 
     final saldo = ((usuario?['saldo'] ?? 0) as num).toDouble();
     final usuarioId = usuario?['id'] as int?;
+    final darkMode = Theme.of(context).brightness == Brightness.dark;
 
     return WillPopScope(
       onWillPop: () async {
@@ -180,7 +180,9 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
+                  color: darkMode
+                      ? const Color(0xFF1E1E1E)
+                      : Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
@@ -195,7 +197,21 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
               const SizedBox(height: 20),
 
               TextField(
-                controller: _destinoController,
+                controller: _contaController,
+                keyboardType: TextInputType.number,
+                maxLength: 5,
+                decoration: const InputDecoration(
+                  labelText: 'Número da conta',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.account_balance),
+                  counterText: '',
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              TextField(
+                controller: _nomeController,
                 decoration: const InputDecoration(
                   labelText: 'Nome do destinatário',
                   border: OutlineInputBorder(),
@@ -282,8 +298,13 @@ class _TransferenciaScreenState extends State<TransferenciaScreen> {
                                 color: Colors.blue,
                               ),
                             ),
-                            title: Text('Para: ${item['destinatario']}'),
-                            subtitle: Text(formatarData(item['data'])),
+                            title: Text(
+                              item['nomeDestinatario'] ?? 'Destinatário',
+                            ),
+                            subtitle: Text(
+                              'Conta: ${item['destinatario']}\n'
+                              '${formatarData(item['data'])}',
+                            ),
                             trailing: Text(
                               '- ${formatarMoeda(valor)}',
                               style: const TextStyle(
