@@ -1,6 +1,6 @@
 name: NexBank
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
@@ -17,13 +17,9 @@ dependencies:
   shared_preferences: ^2.3.3
   fl_chart: ^0.69.0
 
-  
-
   # Imagens e câmera
   image_picker: ^1.0.7
   local_auth: ^2.1.8
-
-
 
 dev_dependencies:
   flutter_test:
